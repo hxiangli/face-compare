@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h2 style="text-align: center">选择以下两张图片进行人脸相似度比对。图片路径于当前项目faceImg目录下</h2>
+</body>
+
+<script src="js/jquery-1.10.2.js"></script>
+<script>
+    $.ajax({
+        url: "/list",
+        type: "post",
+        dataType: 'json',
+        success: function(data){
+            console.log(data);
+            for (var i in data.content){
+                $("body").append("<p style='text-align: center'><input style='width: 80px;' type=\"checkbox\" name=\"item\"><label><img onclick='this.parentElement.previousElementSibling.click()' src='data:image/jpg;base64,"+data.content[i]+"'></label></p>");
+            }
+            $("body").append("<p style='text-align: center'><button style='width: 80px;' onclick='facecompare()'>开始比对</button>")
+            $("body").append("<p style='text-align: center'><button style='width: 80px;' onclick='$(\"input:checked\").prop(\"checked\",false)'>清空选择</button>");
+        }
+    })
+    
+    function facecompare() {
+        var $checkbox = $("body").find("input:checked");
+        if($checkbox.length <2){
+            alert("请求选择两张照片进行比对");
+            return;
+        }
+        var img1 = $($checkbox[0]).parent().find("img").attr("src").substr("data:image/jpg;base64,".length);
+        var img2 = $($checkbox[1]).parent().find("img").attr("src").substr("data:image/jpg;base64,".length);
+        $.ajax({
+            url: "/faceCompare",
+            type: "post",
+            data:{img1:img1,img2:img2},
+            dataType: 'json',
+            success: function(data){
+                if(data.success){
+
+                    alert("相似度为："+data.content);
+                }else {
+                    alert(data.message);
+                }
+            }
+        })
+    }
+
+</script>
+
+</html>
