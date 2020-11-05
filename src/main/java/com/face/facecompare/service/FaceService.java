@@ -69,7 +69,9 @@ public class FaceService {
        jsoninput.put("input", im1base64);
        jsoninput.put("minFaceSize", 50);
        Map<String, Object> oneMap = FaceService.apiMap.get("1");
+       log.info("==开始人脸检测");
        String detectJson =  this.WXAiDetect((Integer) oneMap.get("id"), jsoninput.toJSONString());
+
        if(StringUtils.isEmpty(detectJson)){
            log.info("==人脸检测结果为空 im1base64 {}", im1base64);
            responseResult.setMessage("人脸检测结果为空");
@@ -91,6 +93,7 @@ public class FaceService {
 
        //jna 请求
        Map<String, Object> oneMap2 = FaceService.apiMap.get("2");
+       log.info("==开始人脸特征提取");
        String facetzStr = this.WXAiDetect((Integer) oneMap2.get("id"), json.toJSONString());
 
        //解析结果
@@ -121,11 +124,11 @@ public class FaceService {
        for (int i=0;i<img2tzflatArr.length; i++) {
            pFeature2s[i] = Float.parseFloat(img2tzflatArr[i]);
        }
-
+       log.info("==开始人脸识别相似度对比");
        //人脸识别相似度对比
        float result = this.WXAiCalSimilar(pFeature1s, pFeature2s, facetzjson.getInteger("featureDim"));
 
-       log.info("相似度为=======================："+result);
+       log.info("==相似度为=======================："+result);
        responseResult.setSuccess(true);
        responseResult.setContent(result);
        return responseResult;

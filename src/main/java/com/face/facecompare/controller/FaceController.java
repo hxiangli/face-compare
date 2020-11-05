@@ -32,7 +32,7 @@ public class FaceController {
     @ResponseBody
     public ResponseResult addCaseRole(String img1,String img2) {
         ResponseResult responseResult = new ResponseResult();
-      //  log.info("==进入人脸比对 img1 {} img2 {}", img1,img2);
+        log.info("==进入人脸比对");
         if(StringUtils.isEmpty(img1) || StringUtils.isEmpty(img2)){
             log.error("==图片参数不能为空");
             responseResult.setSuccess(false);
